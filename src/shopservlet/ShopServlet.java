@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +17,7 @@ import com.google.gson.stream.JsonReader;
 /**
  * Servlet implementation class ShopServlet
  */
-@WebServlet(name="ShopServlet", urlPatterns={"/*"})
+@WebServlet(name="ShopServlet", urlPatterns={"/app/*"})
 public class ShopServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	String requestMessageLine;
@@ -52,6 +53,7 @@ public class ShopServlet extends HttpServlet {
 		 System.out.println("pathinfo "+ request.getPathInfo());
 	     String Data="";
 	      // remove leading slash from line if exists
+	   
 	      if (command.startsWith("/") == true)
 	          command = command.substring(1);
 	      System.out.println("command "+command);
@@ -61,6 +63,21 @@ public class ShopServlet extends HttpServlet {
 	      }
 	      System.out.println("actual command "+command);
 	      response.addHeader("Access-Control-Allow-Origin", "*");
+	      
+	      
+//	      if (command.equals("shop.html")){
+//		    	 System.out.println("Java sucks");
+//		    	 RequestDispatcher view = request.getRequestDispatcher("/shop.html");
+//			        // don't add your web-app name to the path
+//
+//			        view.forward(request, response); 
+//		    	 }
+//	      
+	      
+	      
+	     
+	      
+	      
 	  if (command.equals("getProducts")){
 		 String xx=gson.toJson(products.getProducts());
     	 System.out.println("xx "+xx);
