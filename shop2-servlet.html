@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="products"></div>
+<div id="cart"></div>
+<div id="products2"></div>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script type="text/javascript" language="javascript">
+var headers= [
+  "Product Name", "Price", "Picture", "Quantity","Buy Button"];
+var Cartheaders= [
+  "Product Name", "Price", "Picture", "delete", "Quantity"];
+$(document).ready(function(){
+    getProducts();
+});
+function getCart(){
+    $.ajax({
+		dataType: "json",
+		url: "http://localhost:8080/shopservlet/ShopServlet/getCart",
+    	success: function( data ) {
+      		 displayCart(data,"cart");  		
+            }
+   });            
+ }
+
+function getProducts(){
+    $.ajax({
+		dataType: "json",
+		url: "http://localhost:8080/shopservlet/ShopServlet/getProducts",
+    	success: function( data ) {
+       			displayProducts(data,"products");  		
+            }
+   });
+     
+    
+ }
+
+function addToCart(id,fieldname){
+    var num = document.getElementById(fieldname).value;
+    var thedata = { prodid: id,
+            qty: num };
+    
+    var str = JSON.stringify(thedata);
+    $.ajax({
+              url: "http://localhost:8080/shopservlet/ShopServlet/addToCart",
+              type: 'POST',
+              data: str,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'text',
+            success: function(data) {
+                
+console.log(" data "+data);
+               getCart();
+             }
+            });
+    
+   
+    
+ }
+ 
+function deleteCartItem(cartID){
+   var thedata = { cartid: cartID };
+  var str = JSON.stringify(thedata);
+   $.ajax({
+              url: "http://localhost:8080/shopservlet/ShopServlet/deleteFromCart",
+              type: 'POST',
+              data: str,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'text',
+            success: function(data) {
+                
+console.log(" data "+data);
+               getCart();
+             }
+            });
+
+}
+
+function myFunction(itemNo){
+str = JSON.stringify(products[itemNo]);
+window.alert("You selected "+str);
+}
+function displayProducts(products,name) {
+    var out = "<table border=1 width=100%>";
+    var i;
+    out += '<tr style="font-size: 20px;" >';
+    for(i = 0; i < headers.length; i++){
+       out += '<th >'+ headers[i] +'</th>';
+    }
+    out += "</tr>";
+    for(i = 0; i < products.length; i++) {
+        out += "<tr>";
+     	out += '<td>' + products[i].name + '</td>';
+        out += '<td>' + products[i].price + '</td>';
+        out += '<td> <img src="';
+        out += "images/"+products[i].imageFile +'" style="width:104px;height:100px;">'; 
+        out += '<td>' + 'quantity <input type="text" value="1" name="';
+        out += 'quantity' + i + '" id="quant' + i
+        out += '">' + '</td>';
+        out += '<td> <button onclick="addToCart(' +products[i].id;
+        out += ",'quant" + i +"')"+'">Buy</button></td>';
+        out += "</tr>";
+    }
+    out+="</table>";
+    document.getElementById(name).innerHTML = out;
+}
+
+function displayCart(cart,name) {
+    var out = "<h1> Shopping Cart</h1><table border=1 width=100%>";
+    var i;
+    out += '<tr style="font-size: 20px;" >';
+    for(i = 0; i < Cartheaders.length; i++){
+       out += '<th >'+ Cartheaders[i] +'</th>';
+    }
+    out += "</tr>";
+    for(i = 0; i < cart.length; i++) {
+        out += "<tr>";
+        out += '<td>' + cart[i].name + '</td>';
+        out += '<td>' + cart[i].price + '</td>';
+        out += '<td> <img src="';
+        out += "images/"+cart[i].imageFile +'" style="width:104px;height:100px;">'; 
+        out += '<td> <button onclick="deleteCartItem(' +cart[i].cartid;
+        out1 = ")"+'">Delete</button></td>';
+        out +=  out1;
+        out += '<td>' + cart[i].quantity + '</td>';
+        out += "</tr>";
+    }
+    out+="</table>";
+    document.getElementById(name).innerHTML = out;
+}
+
+//displayProducts(productsData,"products");
+</script>
+<button onclick="getCart()">Show Cart</button> 
+ 
+</body>
+</html>
